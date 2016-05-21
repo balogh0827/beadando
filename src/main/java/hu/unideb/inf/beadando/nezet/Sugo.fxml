@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Double?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.unideb.inf.beadando.nezet.SugoVezerlo">
+   <children>
+      <TabPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab fx:id="szabaly" closable="false" text="Sudoku játékszabály">
+            <content>
+              <AnchorPane>
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" layoutX="200.0" layoutY="86.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="jatek" closable="false" text="Játék nézet használata">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Polygon fill="DODGERBLUE" layoutX="300.0" layoutY="196.0" rotate="90.0" scaleX="2.0" scaleY="2.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0">
+                          <points>
+                            <Double fx:value="-50.0" />
+                            <Double fx:value="40.0" />
+                            <Double fx:value="50.0" />
+                            <Double fx:value="40.0" />
+                            <Double fx:value="0.0" />
+                            <Double fx:value="-60.0" />
+                          </points>
+                        </Polygon>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab fx:id="erdmeny" closable="false" text="Eredmények nézet használata">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Circle fill="DODGERBLUE" layoutX="300.0" layoutY="186.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

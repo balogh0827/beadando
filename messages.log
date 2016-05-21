@@ -1,0 +1,16 @@
+11:49:56.802 [main] WARN  n.s.c.i.CoberturaInstrumenter - Unable to instrument file d:\doku\workspace\Sudoku\target\generated-classes\cobertura\hu\unideb\inf\beadando\kontroll\TablaVezerlo.class
+java.lang.IllegalArgumentException: INVOKESPECIAL/STATIC on interfaces require ASM 5
+	at org.objectweb.asm.MethodVisitor.visitMethodInsn(Unknown Source) ~[asm-5.0.1.jar:5.0.1]
+	at org.objectweb.asm.ClassReader.a(Unknown Source) ~[asm-5.0.1.jar:5.0.1]
+	at org.objectweb.asm.ClassReader.b(Unknown Source) ~[asm-5.0.1.jar:5.0.1]
+	at org.objectweb.asm.ClassReader.accept(Unknown Source) ~[asm-5.0.1.jar:5.0.1]
+	at org.objectweb.asm.ClassReader.accept(Unknown Source) ~[asm-5.0.1.jar:5.0.1]
+	at net.sourceforge.cobertura.instrument.CoberturaInstrumenter.instrumentClass(CoberturaInstrumenter.java:161) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.instrument.CoberturaInstrumenter.instrumentClass(CoberturaInstrumenter.java:129) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.instrument.CoberturaInstrumenter.addInstrumentationToSingleClass(CoberturaInstrumenter.java:243) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.instrument.CodeInstrumentationTask.addInstrumentationToSingleClass(CodeInstrumentationTask.java:299) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.instrument.CodeInstrumentationTask.addInstrumentation(CodeInstrumentationTask.java:308) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.instrument.CodeInstrumentationTask.instrument(CodeInstrumentationTask.java:90) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.dsl.Cobertura.instrumentCode(Cobertura.java:74) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.instrument.InstrumentMain.instrument(InstrumentMain.java:82) [cobertura-2.1.1.jar:2.1.1]
+	at net.sourceforge.cobertura.instrument.InstrumentMain.main(InstrumentMain.java:99) [cobertura-2.1.1.jar:2.1.1]
