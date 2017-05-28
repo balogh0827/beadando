@@ -10,13 +10,13 @@ package hu.unideb.inf.beadando.hiba;
 public class AzonosErtekAzOszlopbanHiba extends Exception {
 
 	/**
-	 *	A hibaüzenet generálásához szükséges mező, mely az oszlopban már szereplő, a hibát kiváltó értéket tartalmazza. 
+	 *	Az oszlopban már szereplő, a hibát kiváltó értéket tartalmazza. 
 	 */
 	private String érték;
 	
 	
 	/**
-	 * A hibaüzenet generálásához szükségez mező, mely a hibát kiváltó cella oszlopszámát határozza meg a táblában.
+	 * A hibát kiváltó cella oszlopszámát határozza meg a táblában.
 	 */
 	private int oszlopszám;
 	

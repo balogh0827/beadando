@@ -30,7 +30,6 @@ public class TablaMeretHiba extends Exception {
 	
 	/**
 	 * Hibaüzenet a kivételt kiváltó okokról.
-	 * 
 	 * @return a leírást tartalmazó {@code String}
 	 * @see java.lang.Throwable#getMessage()
 	 */

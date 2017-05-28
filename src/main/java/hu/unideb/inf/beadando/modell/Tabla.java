@@ -50,7 +50,7 @@ public class Tabla {
 	
 	
 	/**
-	 * A {@link Tabla#állapot} mező értékét lekérdező metódus.
+	 * Az {@link Tabla#állapot} mező értékét lekérdező metódus.
 	 * @return a <code>Tabla</code> állapota
 	 */
 	public TablaAllapot getTáblaÁllapot(){
@@ -59,7 +59,7 @@ public class Tabla {
 	
 	
 	/**
-	 * A {@link Tabla#állapot} mező értékét állítja be a paraméter értékére.
+	 * Az {@link Tabla#állapot} mező értékét állítja be a paraméter értékére.
 	 * @param állapot a <code>Tabla</code> állapota
 	 */
 	public void setTáblaÁllapot(TablaAllapot állapot){

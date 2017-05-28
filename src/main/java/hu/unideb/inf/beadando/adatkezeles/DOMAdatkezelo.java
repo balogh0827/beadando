@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,7 +12,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,17 +28,18 @@ import org.xml.sax.SAXException;
  * @author Balogh Ádám
  *
  */
-public class XMLAdatkezelo implements AdatkezeloInterface {
+public class DOMAdatkezelo implements AdatkezeloInterface {
 
 	/**
-	 * A kimeneti állományokkal kapcsolatos adatkezelést valósítja meg.
-	 * @param adatok a fájlba kimneteni kívánt adatok {@code String}eket tartalmazó listája 
-	 * @param kimenetiÁllomány azon állomány neve ahová az {@code adatok} mentése történik
-	 * @throws IOException amennyiben nem várt hiba történik a {@code kimenetiÁllomány} elérése során
+	 * Naplózásért felelős logger.
 	 */
+	private static Logger logger = LoggerFactory.getLogger(DOMAdatkezelo.class);
+	
 	@Override
-	public void kimentFájlba(List<String> adatok, String kimenetiÁllomány) throws IOException {
+	public void kimentFájlba(List<? extends Object> adatok, String kimenetiÁllomány) throws IOException {
 
+		logger.info("Játékállás fájlba mentése.");
+		
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -53,19 +54,19 @@ public class XMLAdatkezelo implements AdatkezeloInterface {
 				gyökérelem.appendChild(cellaElem);
 
 				Attr ct = doc.createAttribute("CellaTipus");
-				ct.setValue(adatok.get(i));
+				ct.setValue((String)adatok.get(i));
 				cellaElem.setAttributeNode(ct);
 
 				Element sorElem = doc.createElement("sorszám");
-				sorElem.appendChild(doc.createTextNode(adatok.get(i + 1)));
+				sorElem.appendChild(doc.createTextNode((String)adatok.get(i + 1)));
 				cellaElem.appendChild(sorElem);
 
 				Element oszlopElem = doc.createElement("oszlopszám");
-				oszlopElem.appendChild(doc.createTextNode(adatok.get(i + 2)));
+				oszlopElem.appendChild(doc.createTextNode((String)adatok.get(i + 2)));
 				cellaElem.appendChild(oszlopElem);
 
 				Element tartalomElem = doc.createElement("tartalom");
-				tartalomElem.appendChild(doc.createTextNode(adatok.get(i + 3)));
+				tartalomElem.appendChild(doc.createTextNode((String)adatok.get(i + 3)));
 				cellaElem.appendChild(tartalomElem);
 
 			}
@@ -75,32 +76,26 @@ public class XMLAdatkezelo implements AdatkezeloInterface {
 
 			DOMSource forrás = new DOMSource(doc);
 			StreamResult eredmény = new StreamResult(new File(kimenetiÁllomány));
-
 			tr.transform(forrás, eredmény);
 		} catch (ParserConfigurationException | TransformerException e) {
-			System.err.println("Hiba történt a " + kimenetiÁllomány + " létrehozása közben.");
-		} 
+			logger.error("Hiba történt a " + kimenetiÁllomány + " létrehozása közben.");
+		}
 
 	}
 
-	/**
-	 * Lehetővé teszi külső erőforrás állományok tartalmának beolvasását.
-	 * @param forrásÁllomány azon állomány neve ahonnan az adatok bevitele történik
-	 * @throws IOException amennyiben nem várt hiba történik a {@code forrásÁllomány} elérése során
-	 * @return az adatok {@code String}-eket tartalmazó listája
-	 */
+	
 	@Override
 	public List<String> betöltFájlból(String forrásÁllomány) throws IOException {
 
 		List<String> lista = new ArrayList<>();
-
-		//forrásÁllomány = getClass().getResource("konnyu.xml").getFile();
 		
+		logger.info("Játékállás betöltése fájlból.");
+
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document doc = builder.parse(forrásÁllomány);
-
+			System.out.println("BETÖLTÖTT: " + getClass().getClassLoader().getResource("konnyu.xml"));
 			NodeList list = doc.getElementsByTagName("cella");
 
 			String tipus;
@@ -128,10 +123,11 @@ public class XMLAdatkezelo implements AdatkezeloInterface {
 			}
 
 		} catch (ParserConfigurationException | SAXException e) {
-			System.err.println("Hiba történt a  " + forrásÁllomány + "  fájl feldolgozása közben.");
-		}
-
+			logger.error("Hiba történt a  " + forrásÁllomány + "  fájl feldolgozása közben.");
+		} 
+		
 		return lista;
 	}
+	
 
 }

@@ -1,26 +1,31 @@
 package hu.unideb.inf.beadando.nezet;
 
-import java.io.IOException;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import javafx.application.*;
+import javafx.stage.*;
+import javafx.scene.*;
+import javafx.scene.layout.*;
+import javafx.fxml.*;
 
-import hu.unideb.inf.beadando.Kezelo;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 
 public class NezetVezerlo extends Application{
 
 	private Stage ablak;
-	private String hibaüzenet = "Nem várt hiba történt ";
+	private final String hibaüzenet = "Nem várt hiba történt ";
+	
+	private static Logger logger = LoggerFactory.getLogger(NezetVezerlo.class);
 	
 	public void mutatAblak(){
-		létrehozFőmenü();
 		ablak.show();
 	}
 	
-	public void bezárAbalak(){
+	public void elrejtAblak(){
+		ablak.hide();
+	}
+	
+	public void bezárAblak(){
+		logger.info("Kilépés.");
 		ablak.close();
 	}
 	
@@ -39,36 +44,32 @@ public class NezetVezerlo extends Application{
 	
 	private void létrehozFőmenü(){
 		
-		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("Fomenu.fxml"));
 		
 		try {
-			
 			AnchorPane főmenü = (AnchorPane)loader.load();
 			FomenuController controller = loader.getController();
-			
 			controller.setNézetVezérlő(this);
-			
 			Scene scene = new Scene(főmenü);
 			ablak.setScene(scene);
-
 			ablak.setResizable(false);
-			ablak.show();
+			mutatAblak();
 			
-			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			String üzenet = hibaüzenet;
-			üzenet += "a főmenü létrehozásakor.";
-			System.err.println(üzenet);
+			üzenet += "a főmenü létrehozásakor.\n\t";
+			üzenet += "Az alkalmazás nem tudja folytatni a működését, ezért leáll.";
+			logger.error(üzenet);
+			e.printStackTrace();
 			System.exit(0);
 		}
 		
+		logger.info("A főmenü sikeresen létrejött.");
 	}
 	
 	
 	public void létrehozJátékNézet(){
-		
 		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("Jatek.fxml"));
@@ -77,33 +78,28 @@ public class NezetVezerlo extends Application{
 			
 			AnchorPane pane = (AnchorPane)loader.load();
 			JatekNezetVezerlo vezérlő = loader.getController();
-			
 			vezérlő.setNézetVezérlő(this);
-			
-			
 			Scene sc = new Scene(pane);
-			
-			ablak.close();
-			
-			
+			elrejtAblak();
 			Stage játék = new Stage();
 			játék.setScene(sc);
 			játék.setTitle("Sudoku Játék");
 			játék.show();
-			
 			vezérlő.setSage(játék);
 		} catch (Exception e) {
 			String üzenet = hibaüzenet;
-			üzenet += "a játéknézet létrehozásakor.";
-			System.err.println(üzenet);
-			e.printStackTrace();
+			üzenet += "a játéknézet létrehozásakor.\n\t";
+			üzenet += e.getMessage();
+			logger.error(üzenet);
+			return;
 		}
+		
+		logger.info("A játéknézet sikeresen létrejött.");
 		
 	}
 	
 	
 	public void létrehozEredményNézet(){
-		
 		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("Eredmenyek.fxml"));
@@ -113,23 +109,22 @@ public class NezetVezerlo extends Application{
 			BorderPane eredmények = (BorderPane) loader.load();
 			EredmenyekNezetVezerlo vezérlő = loader.getController();
 			Scene sc = new Scene(eredmények);
-		
 			vezérlő.setNézetVezérlő(this);
-			
-			ablak.close();
-		
+			elrejtAblak();
 			Stage eredmény = new Stage();
 			eredmény.setTitle("Eredmények");
 			eredmény.setScene(sc);
 			eredmény.show();
-			
 			vezérlő.setSage(eredmény);
 		} catch (Exception e) {
 			String üzenet = hibaüzenet;
-			üzenet += "az eredménynézet létrehozásakor.";
-			System.err.println(üzenet);
+			üzenet += "az eredménynézet létrehozásakor.\n\t";
+			üzenet += e.getMessage();
+			logger.error(üzenet);
+			return;
 		}
 		
+		logger.info("Az eredménynézet sikeresen létrejött.");
 	}
 	
 	
@@ -142,12 +137,8 @@ public class NezetVezerlo extends Application{
 			
 			AnchorPane súgó = (AnchorPane)loader.load();
 			SugoVezerlo vezérlő = loader.getController();
-			
 			vezérlő.kiválaszt(lapszám);
-			
 			Scene tartalom = new Scene(súgó);
-			
-			
 			Stage segítség = new Stage();
 			segítség.setTitle("Súgó");
 			segítség.setScene(tartalom);
@@ -155,9 +146,13 @@ public class NezetVezerlo extends Application{
 			
 		}catch(Exception e){
 			String üzenet = hibaüzenet;
-			üzenet += "az súgónézet létrehozásakor.";
-			System.err.println(üzenet);
+			üzenet += "a súgónézet létrehozásakor.\n\t";
+			üzenet += e.getMessage();
+			logger.error(üzenet);
+			return;
 		}
+		
+		logger.info("A súgónézet sikeresen létrejött.");
 		
 	}
 

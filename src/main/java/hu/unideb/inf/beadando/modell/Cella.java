@@ -28,7 +28,7 @@ public class Cella {
 	
 	
 	/**
-     * A <code>Cella<code> típusát írja le az {@link CellaTipus} felsorolásos típus segítségével.
+     * A <code>Cella</code> típusát írja le az {@link CellaTipus} felsorolásos típus segítségével.
      */
 	private CellaTipus tipus;
 		

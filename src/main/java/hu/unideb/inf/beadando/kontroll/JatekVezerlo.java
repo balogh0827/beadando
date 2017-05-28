@@ -1,20 +1,18 @@
 package hu.unideb.inf.beadando.kontroll;
 
+import java.io.File;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import hu.unideb.inf.beadando.adatkezeles.AdatkezeloInterface;
-import hu.unideb.inf.beadando.adatkezeles.XMLAdatkezelo;
-import hu.unideb.inf.beadando.hiba.AzonosErtekARekeszbenHiba;
-import hu.unideb.inf.beadando.hiba.AzonosErtekASorbanHiba;
-import hu.unideb.inf.beadando.hiba.AzonosErtekAzOszlopbanHiba;
-import hu.unideb.inf.beadando.hiba.CellaTartalomHiba;
-import hu.unideb.inf.beadando.hiba.CellaTipusValtoztatasiHiba;
-import hu.unideb.inf.beadando.hiba.JatekStatuszValtasiHiba;
-import hu.unideb.inf.beadando.hiba.OszlopszamHiba;
-import hu.unideb.inf.beadando.hiba.SorszamHiba;
-import hu.unideb.inf.beadando.hiba.TablaMeretHiba;
-import hu.unideb.inf.beadando.modell.Jatek;
-import hu.unideb.inf.beadando.modell.JatekStatusz;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import hu.unideb.inf.beadando.adatkezeles.*;
+import hu.unideb.inf.beadando.hiba.*;
+import hu.unideb.inf.beadando.modell.*;
 
 
 /**
@@ -24,6 +22,11 @@ import hu.unideb.inf.beadando.modell.JatekStatusz;
  */
 public class JatekVezerlo{
 
+	/**
+	 * A naplózást végző logger.
+	 */
+	private static Logger logger = LoggerFactory.getLogger(JatekVezerlo.class);
+	
 	
 	/**
 	 *  Az aktuálisan játszott {@code Jatek} példány.
@@ -59,21 +62,58 @@ public class JatekVezerlo{
 	 */
 	private TablaVezerlo táblavezérlő;
 	
+	
+	/**
+	 * Korábbi játékállapot beolvasásakor itt tárolódik a feladvánnyal eddig etöltött idő. 
+	 */
+	private long betöltöttIdő;
+	
+	
+	/**
+	 * A játémenet eredményének tárolására szolgál.
+	 */
+	private Eredmenyek eredmények;
+	
 	/**
 	 *  Adatkezelésért felelős {@code Interface}.
 	 *  @see hu.unideb.inf.beadando.adatkezeles.AdatkezeloInterface
 	 */
 	private AdatkezeloInterface adatkezelő;	
 	
+	
+	/**
+	 * Megmondja, hogy a játékot betölteni vagy generálni kell -e. 
+	 */
+	private boolean betölt;
+	
+	/**
+	 * A tábla generálásáért felelős {@link Generator} osztály egy példánya.
+	 */
+	private Generator generátor;
+	
 	/**
 	 * Új {@code JatekVezerlo} létrehozását végző paraméter nélküli konstruktor.
 	 */
 	public JatekVezerlo(){
-	
 		táblavezérlő = new TablaVezerlo();
+		generátor = new Generator();
 	}
 
+	/**
+	 * Beállítja a {@link JatekVezerlo#betölt} flag-et igaz értékre.
+	 */
+	public void setBetölt(){
+		betölt  = true;
+	}
 	
+	
+	/**
+	 * Lekérdezi a {@link JatekVezerlo#betölt} állapotát. 
+	 * @return true ha betölteni, false ha generálni kell a játékot
+	 */
+	public boolean getBetölt(){
+		return betölt;
+	}
 	
 	/**
 	 * @param táblaméret a {@code Tabla} beállítandó mérete
@@ -83,6 +123,13 @@ public class JatekVezerlo{
 	public void létrehozJátéktábla(int táblaméret) throws TablaMeretHiba{
 		
 		táblavezérlő.létrehozMegadottMéretűTábla(táblaméret);
+		
+		if(!getBetölt()){
+			logger.info(táblaméret + "x" + táblaméret + " méretű játéktábla generálása.");
+			generátor.generálTábla(táblavezérlő);
+		}else{
+			logger.info("Táblagenerálás kihagyva.");
+		}
 	}
 	
 	
@@ -97,6 +144,23 @@ public class JatekVezerlo{
 	
 	
 	/**
+	 * Megvizsgálja, hogy az aktuális játékpéldány kapott -e értéket.
+	 * @return true ha az aktuális játék {@code null}, egyébként {@code false}
+	 */
+	public boolean getAktuálisJátékIsNull(){
+		return aktuálisJáték == null;
+	}
+	
+	/**
+	 * Megvizsgálja, hogy a stopper {@code null} értékű vagy sem.
+	 * @return true ha a stopper @{code null}, egyébként @{code false}
+	 */
+	public boolean getStopperIsNull(){
+		return stopper == null;
+	}
+	
+	
+	/**
 	 * Alapértelmezett beállításokat végez, előkészíti a játék indulását.
 	 */
 	private void inicializál() {
@@ -106,6 +170,8 @@ public class JatekVezerlo{
 		fut = false;
 		feladta = false;
 		befejezte = false;
+		betöltöttIdő = 0;
+		logger.debug("Az inicializálás megtörtént.");
 	}
 	
 	
@@ -118,6 +184,7 @@ public class JatekVezerlo{
 		if(név.equals(""))
 			név = "1. játékos";
 		aktuálisJáték.setJátékosNév(név);
+		logger.debug("A játékos neve beállításra került a " + név + " értékre.");
 	}
 	
 	
@@ -164,11 +231,14 @@ public class JatekVezerlo{
 	 * @see hu.unideb.inf.beadando.modell.JatekStatusz
 	 */
 	public void indít() throws JatekStatuszValtasiHiba {
-		inicializál();
-		JatekStatuszEllenor.érvényesítJátékStátuszVáltás(aktuálisJáték, JatekStatusz.ELKEZDETT);
-		aktuálisJáték.setJátékÁllapot(JatekStatusz.ELKEZDETT);
-		stopper.elindít();
-		fut = true;
+			inicializál();
+			JatekStatuszEllenor.érvényesítJátékStátuszVáltás(aktuálisJáték, JatekStatusz.ELKEZDETT);
+			aktuálisJáték.setJátékÁllapot(JatekStatusz.ELKEZDETT);
+			logger.debug("A játék állapota " + JatekStatusz.ELKEZDETT + " állapotúra módosult.");
+			stopper.elindít();
+			logger.debug("A stopper elindult.");
+			fut = true;
+			logger.info("Az aktuális játék elindítva.");
 	}
 
 	
@@ -182,11 +252,17 @@ public class JatekVezerlo{
 		
 		JatekStatuszEllenor.érvényesítJátékStátuszVáltás(aktuálisJáték, JatekStatusz.FELADOTT);
 		aktuálisJáték.setJátékÁllapot(JatekStatusz.FELADOTT);
+		logger.debug("A játék állapota " + JatekStatusz.FELADOTT + " állapotúra módosult.");
 		fut = false;
 		feladta = true;
 		
-		aktuálisJáték.setBefejezésIdeje(ZonedDateTime.now());
+		aktuálisJáték.setBefejezésIdeje(LocalDateTime.now());
+		logger.debug("A játék befejezési ideje: " + aktuálisJáték.getBefejezésIdeje());
 		stopper.megállít();	
+		logger.debug("A stopper megállt " + stopper.getElteltIdő() + " másodperc után.");
+		kiírFájlbaEredmények();
+		beállítJátékosNév("");
+		logger.info("A játékos feladta a játékot.");
 	}
 
 	
@@ -200,11 +276,31 @@ public class JatekVezerlo{
 		
 		JatekStatuszEllenor.érvényesítJátékStátuszVáltás(aktuálisJáték, JatekStatusz.BEFEJEZETT);
 		aktuálisJáték.setJátékÁllapot(JatekStatusz.BEFEJEZETT);
+		logger.debug("A játék állapota " + JatekStatusz.BEFEJEZETT + " állapotúra módosult.");
 		fut = false;
 		befejezte = true;
-	
-		aktuálisJáték.setBefejezésIdeje(ZonedDateTime.now());
+		aktuálisJáték.setBefejezésIdeje(LocalDateTime.now());
+		logger.debug("A játék befejezési ideje: " + aktuálisJáték.getBefejezésIdeje());
 		stopper.megállít();
+		logger.debug("A stopper megállt " + stopper.getElteltIdő() + " másodperc után.");
+		if(táblavezérlő.készATábla()){
+			kiírFájlbaEredmények();
+		}
+		logger.info("A játékos befejezte a játékot.");
+	}
+	
+	
+	/**
+	 * Előállítja a játékmappa elérési útját.
+	 * @return az elérési utat tartalmazó {@code String}
+	 */
+	private String lekérElérésiÚt(){
+		String elválasztó = System.getProperty("file.separator");
+		String felhasználóimappa = System.getProperty("user.home");
+		String mappa = ".sudoku";
+		String út = felhasználóimappa + elválasztó + mappa + elválasztó;
+		logger.debug("Játékmappa helye: " + út);
+		return út;
 	}
 	
 	
@@ -218,11 +314,10 @@ public class JatekVezerlo{
 	 */
 	public void táblaMentés() throws IOException, SorszamHiba, OszlopszamHiba{
 		
-		adatkezelő = new XMLAdatkezelo();
-		
+		adatkezelő = new DOMAdatkezelo();
 		String kimenetiÁllománynév = "";
-		
-		switch(táblavezérlő.lekérTáblaMéret()){
+		int táblaméret = táblavezérlő.lekérTáblaMéret();
+		switch(táblaméret){
 			case 4:
 				kimenetiÁllománynév ="konnyu.xml";
 				break;
@@ -231,10 +326,13 @@ public class JatekVezerlo{
 				break;
 			case 16:
 				kimenetiÁllománynév = "nehez.xml";
-		
 		}
 		
-		adatkezelő.kimentFájlba(táblavezérlő.leképezTábla(), kimenetiÁllománynév);
+		logger.debug("A tábla mentési fájljának neve: " + kimenetiÁllománynév);;
+
+		String útvonal = lekérElérésiÚt() + kimenetiÁllománynév;		
+		
+		adatkezelő.kimentFájlba(táblavezérlő.leképezTábla(), útvonal);
 		
 	}
 	
@@ -253,49 +351,216 @@ public class JatekVezerlo{
 	 * @throws AzonosErtekAzOszlopbanHiba ha már található azonos tartalmú cella az oszlopban
 	 * @throws AzonosErtekARekeszbenHiba ha már található azonos tartalmú cella a rekeszben
 	 */
+	@SuppressWarnings("unchecked")
 	public void betöltTábla(String minősítő) throws IOException, SorszamHiba, OszlopszamHiba, CellaTartalomHiba, CellaTipusValtoztatasiHiba, AzonosErtekASorbanHiba, AzonosErtekAzOszlopbanHiba, AzonosErtekARekeszbenHiba{
 		
-		System.out.println("betöltés fájlból...");
+		
+		adatkezelő = new DOMAdatkezelo();
+		String fájlnév = minősítő + ".xml";
+
+		String útvonal = lekérElérésiÚt() + fájlnév;
+		File fájl = new File(útvonal); 
+		logger.debug("A tábla betöltési fájlja: " + útvonal);
+		if(fájl.exists()){	
+			táblavezérlő.feldolgoz((List<String>)adatkezelő.betöltFájlból(útvonal));
+		}else{
+			logger.error("A fájl nem létezik: " + útvonal);
+			throw new IOException();
+		}
+	}
+	
+	
+	/**
+	 * Betölti a legutóbb elmentett játékállást.
+	 * @param minősítő a mentett játékállás fokozata
+	 * @throws IOException ha valamilyen fájlműveleti hiba történik
+	 */
+	@SuppressWarnings("unchecked")
+	public void betöltJátékállás(String minősítő) throws IOException{
+		adatkezelő = new JsonAdatkezelo();
+
+		String fájlnév = minősítő + "_adatok.json";
+
+		String útvonal = lekérElérésiÚt() + fájlnév;
+		logger.debug("A legutóbbi \"" + minősítő + "\" játékállás fájlja: " + útvonal);
+		File fájl = new File(útvonal); 
+
+		if(fájl.exists()){	
+			
+			List<String> adatok = (List<String>)adatkezelő.betöltFájlból(útvonal);
+			
+			beállítJátékosNév(adatok.get(0));
+			betöltöttIdő = Long.parseLong(adatok.get(1));
+			logger.debug("Az adattagok beállítása megtörént a mentési fájl alapján.");
+		}else{
+			logger.error("A fájl nem található: " + útvonal);
+			throw new IOException();
+		}
+	}
+	
+	
+	/**
+	 * Fájlba menti az aktuális játék jelenlegi állását.
+	 * @throws IOException ha valamilyen fájlműveleti hiba történik
+	 */
+	public void játékállásMentés() throws IOException{
+		adatkezelő = new JsonAdatkezelo();
+
+		String fájlnév = "";
+		
+		switch(táblavezérlő.lekérTáblaMéret()){
+		case 4:
+			fájlnév = "konnyu_adatok.json";
+			break;
+		case 9:
+			fájlnév = "normal_adatok.json";
+			break;
+		case 16:
+			fájlnév = "nehez_adatok.json";
+		}
+		
+		String útvonal = lekérElérésiÚt() + fájlnév;
+		logger.debug("A játékállás mentési fájlja: " + útvonal);
+		adatkezelő.kimentFájlba(lekérAdatok(), útvonal);
+	}
+	
+	
+	/**
+	 * Összegyűjti a játékos adatait.
+	 * @return a lekérdezett adatok listája
+	 */
+	private List<String> lekérAdatok(){
+		List<String> adatlista = new ArrayList<>();
+		
+		adatlista.add(lekérJátékosNév());
+		adatlista.add(String.valueOf(lekérElteltIdő()));
+		
+		return adatlista;
+	}
+	
+	
+	/**
+	 * Fájlba menti az összes játék eredményét.
+	 */
+	public void kiírFájlbaEredmények() {
+		
+		String fájlnév = lekérElérésiÚt() + "eredmenyek.xml";
+		logger.debug("Az eredmények mentési fájlja: " + fájlnév);
+		java.io.File f = new java.io.File(fájlnév);
+		
+		adatkezelő = new JAXBAdatkezelo();
+		eredmények = new Eredmenyek(); 
+		
+		List<Eredmenyek> lista = new ArrayList<>();
+		
+		if(!f.exists()){
+			logger.warn("Az eredménymentési fájl nem létezik.");
+			try {
+				lista.add(eredmények);
+				adatkezelő.kimentFájlba(lista, fájlnév);
+				return;
+			} catch (IOException e1) {
+				logger.error("Hiba történt az eredmények mentési fájljának létrehozásakor.");
+			}
+		}
+		
+		String állapot = befejezett() ? "befejezett" : "feladott";
+		
+		Eredmeny eredmény = new Eredmeny();
+
+		
+		List<Eredmeny> eredményekmentés =  betöltFájlbólEredmények();
+		
+		for(Eredmeny e : eredményekmentés){
+			if(e.getJatekosnev().equals("%TEST%"))
+				continue;
+			eredmények.hozzáadEredmény(e);
+		}
+		
+		int méret = táblavezérlő.lekérTáblaMéret();
+		eredmény.setJatekosNev(aktuálisJáték.getJátékosNév());
+		eredmény.setTablameret(méret + "x" + méret);
+		eredmény.setJatekallapot(állapot);
+		eredmény.setIdotartam(lekérÖsszidőStringként());
+		eredmény.setDatum(aktuálisJáték.getBefejezésIdeje()
+				.format(DateTimeFormatter.ofPattern("YYYY.MM.dd. HH:mm:ss"))
+				.toString());
+		
+		eredmények.hozzáadEredmény(eredmény);
 		
 		
+		lista.add(eredmények);
 		
-//		
-//			if(minősítő.equals("konnyu")){
-//				fájl = getClass().getResource("konnyu.xml").getFile();
-//			}else if(minősítő.equals("normal")){
-//				fájl = getClass().getResource("normal.xml").getFile();
-//			}
-		System.out.println(getClass().getResource("Fomenu.fxml") == null);
-//		fájl = getClass().getClassLoader().getResource("konnyu.xml").getPath();
-//		String teljesNév = fájl;
-		//System.out.println(getClass().getResource("konnyu.xml").toString());
-		//String fájlnév = getClass().getResource(teljesNév).toString();
-		//System.out.println("A fájl:" + fájlnév);
-		//
-		//táblavezérlő.feldolgoz(adatkezelő.betöltFájlból("konnyu.xml"));
-		//táblavezérlő.feldolgoz(adatkezelő.betöltFájlból("src/main/resources/konnyu.xml"));
+		try {
+			adatkezelő.kimentFájlba(lista, fájlnév);
+		} catch (IOException e) {
+			logger.error("Hiba történt az eredmények mentési fájljának létrehozásakor.");
+		}
+	}
+	
+	
+	
+	/**
+	 * Betölti a mentési fájlból a korábbi játékok adatait.
+	 * @return a korábban lejátszott játékok eredményeinek listája
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Eredmeny> betöltFájlbólEredmények(){
 		
+		adatkezelő = new JAXBAdatkezelo();
+		
+		List<Eredmeny> lista =  new ArrayList<>();
+		List<Eredmeny> tmp = new ArrayList<>();
+		
+		String fájl = lekérElérésiÚt() + "eredmenyek.xml";
+		
+		try {
+			tmp = (List<Eredmeny>)adatkezelő.betöltFájlból(fájl);
+			logger.debug("Az eredmények betöltése az alábbi fájlból: " + fájl);
+		} catch (IOException e) {
+			logger.error("Hiba az eredmények betöltésekor.");
+		}
+		
+		for(Eredmeny e : tmp){
+			if(e.getJatekosnev().equals("%TEST%")){
+				continue;
+			}else{
+				lista.add(e);
+			}
+		}
+
+		return lista;
 	}
 	
 	
 	 /**
-	 * A {@link Stopper} osztálytól lekérdezi az eltelt időt
+	 * A {@link Stopper} osztálytól lekérdezi az eltelt időt.
 	 * @return az eltelt idő {@code String}-ként
 	 */
 	public String lekérElteltidőStringként(){
 		 return átalakít(stopper.getElteltIdő());
 	 }
 	 
-	 
+
+	/**
+	 * Lekérdezi az aktuális feladvánnyal eddig játszott időt {@code String} formában.
+	 * Figyelembe veszi betöltött játék esetén a játékállás mentése előtti eltelt időt is.
+	 * @return az eltelt összidő
+	 */
+	public String lekérÖsszidőStringként(){
+		
+		return átalakít(lekérElteltIdő() + betöltöttIdő);
+	}
+	
 	 /**
-	  * A {@link Stopper} osztálytól lekérdezi az eltelt időt
+	  * A {@link Stopper} osztálytól lekérdezi az eltelt időt.
 	 * @return az eltelt idő nanoszekundumban
 	 */
 	public long lekérElteltIdő(){
 		 return stopper.getElteltIdő();
 	 }
 
-	
+
 	/**
 	 * A nanoszekundumban tárolt, stopper által mért eltelt időt átlakítja könnyen értelmezhető formátumra.
 	 * @param érték az eltelt idő
@@ -313,8 +578,6 @@ public class JatekVezerlo{
 				+ (másodperc < 10 ? "0" + másodperc : másodperc);
 	}
 
-	
-	
 	
 	/**
 	 * Az idő számlálását külön szálon végző belső osztály.
@@ -345,7 +608,6 @@ public class JatekVezerlo{
 			while (fut) {
 				try {
 					elteltIdő = System.nanoTime() - kezdésiIdő;
-					//System.out.println(átalakít(elteltIdő));
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {}
 			}
@@ -376,6 +638,6 @@ public class JatekVezerlo{
 		public long getElteltIdő(){
 			return elteltIdő;
 		}
-
+		
 	}
 }

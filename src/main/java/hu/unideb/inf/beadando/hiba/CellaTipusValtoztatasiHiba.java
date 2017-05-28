@@ -15,8 +15,7 @@ public class CellaTipusValtoztatasiHiba extends Exception {
 
 	
 	/**
-	 *	A megváltozatatandó típusú <code>Cella</code>.
-	 *
+	 *	Az a <code>Cella</code>, melynek a típusát meg akarják változtatni.
 	 *  @see Cella
 	 */
 	private Cella cella;
@@ -24,7 +23,6 @@ public class CellaTipusValtoztatasiHiba extends Exception {
 	
 	/**
 	 *	A beállítandó, a kivételt kiváltó <code>CellaTipus</code>.
-	 *
 	 * @see CellaTipus
 	 */
 	private CellaTipus típus;
@@ -45,7 +43,6 @@ public class CellaTipusValtoztatasiHiba extends Exception {
 	
 	/**
 	 * A kivétel leírását generáló metódus.
-	 * 
 	 * @return a leírást tartalmazó {@code String}
 	 * @see java.lang.Throwable#getMessage()
 	 */
@@ -60,7 +57,6 @@ public class CellaTipusValtoztatasiHiba extends Exception {
 	
 	/**
 	 * A hiba részletes leírását generálja nyomkövetési célból.
-	 * 
 	 * @return részletes leírás a kivétel okáról
 	 */
 	public String getRészletesHibaÜzenet(){

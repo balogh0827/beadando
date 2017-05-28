@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import hu.unideb.inf.beadando.hiba.AzonosErtekARekeszbenHiba;
 import hu.unideb.inf.beadando.hiba.AzonosErtekASorbanHiba;
 import hu.unideb.inf.beadando.hiba.AzonosErtekAzOszlopbanHiba;
@@ -16,7 +15,7 @@ import hu.unideb.inf.beadando.hiba.TablaMeretHiba;
 import hu.unideb.inf.beadando.kontroll.TablaVezerlo;
 import hu.unideb.inf.beadando.modell.CellaTipus;
 
-public class TablaVezerloTeszt {
+public class TablaVezerloTest {
 	
 	private TablaVezerlo vezérlő;
 	private String elvártÜzenet;
@@ -28,7 +27,9 @@ public class TablaVezerloTeszt {
 		vezérlő = new TablaVezerlo();
 		try {
 			vezérlő.létrehozMegadottMéretűTábla(táblaméret);
-		} catch (TablaMeretHiba e) {}
+		} catch (TablaMeretHiba e) {
+			fail("Megengedett táblaméretnél nem kellene TablaMeretHiba kivételnek kiváltódnia!");
+		}
 	}
 	
 	
@@ -670,7 +671,7 @@ public class TablaVezerloTeszt {
 	
 	
 	@Test
-	public void leképezTáblaÜresTáblaTeszt(){
+	public void leképezTáblaÜresTáblaTeszt() throws SorszamHiba, OszlopszamHiba{
 		
 		java.util.List<String> tábla = new java.util.ArrayList<>();
 		
@@ -685,11 +686,13 @@ public class TablaVezerloTeszt {
 			}
 		}
 	
-		try {
-			assertArrayEquals("Azonosnak kellene lennie.", vezérlő.leképezTábla().toArray(new String[0]), tábla.toArray(new String[0]));
-		} catch (SorszamHiba | OszlopszamHiba e) {
-			fail("Nem kellett volna kivételnek kiváltódni.");
-		}
+		assertArrayEquals("Azonosnak kellene lennie.", vezérlő.leképezTábla().toArray(new String[0]), tábla.toArray(new String[0]));
+//		try {
+//			assertArrayEquals("Azonosnak kellene lennie.", vezérlő.leképezTábla().toArray(new String[0]), tábla.toArray(new String[0]));
+//		} catch (SorszamHiba | OszlopszamHiba e) {
+//			fail("Nem kellett volna kivételnek kiváltódni.");
+//		}
+		
 		
 	}
 	

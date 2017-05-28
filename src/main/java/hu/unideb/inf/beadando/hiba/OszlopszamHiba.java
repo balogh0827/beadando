@@ -41,7 +41,7 @@ public class OszlopszamHiba extends Exception {
 
 	/**
 	 *  A felhasználó számára érthető hibaüzenet generálása a fellépő hiba forrásának megadásával.
-	 *  Az üzenet tipp formájában segítséget nyújt ugyanezen hiba elkerüléséhez.
+	 *  Az üzenet tipp formájában segítséget nyújt ugyanezen hiba további elkerüléséhez.
 	 * 
 	 * @return a leírást tartalmazó {@code String}
 	 * @see java.lang.Throwable#getMessage()

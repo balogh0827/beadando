@@ -1,11 +1,14 @@
 package hu.unideb.inf.beadando.nezet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.fxml.FXML;
 
 public class FomenuController {
 	
 	private NezetVezerlo vezérlő;
-
+	private static Logger logger = LoggerFactory.getLogger(FomenuController.class);
 	
 	public void setNézetVezérlő(NezetVezerlo főablak){
 		this.vezérlő  = főablak;
@@ -15,7 +18,7 @@ public class FomenuController {
 	@FXML
 	private void ujJatekotIndit(){
 		
-		System.out.println("Játék indítása");
+		logger.info("Játék indítása...");
 		vezérlő.létrehozJátékNézet();
 	}
 	
@@ -23,7 +26,7 @@ public class FomenuController {
 	@FXML
 	private void elozmenyeketMutat(){
 		
-		System.out.println("Eredmények betöltése");
+		logger.info("Eredmények betöltése...");
 		vezérlő.létrehozEredményNézet();
 
 	}
@@ -32,12 +35,12 @@ public class FomenuController {
 	@FXML
 	private void segitsegetNyujt(){
 		
-		System.out.println("Súgó betöltése...");
+		logger.info("Súgó betöltése...");
 		vezérlő.betöltSúgó(1);
 	}
 	
 	@FXML
 	private void kilep(){
-		vezérlő.bezárAbalak();
+		vezérlő.bezárAblak();
 	}
 }

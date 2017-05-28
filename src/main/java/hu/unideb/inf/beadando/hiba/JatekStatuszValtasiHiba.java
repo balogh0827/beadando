@@ -32,7 +32,6 @@ public class JatekStatuszValtasiHiba extends Exception {
 	
 	/**
 	 * A kivétel létrehozásáért felelős konstruktor.
-	 * 
 	 * @param jelenlegi a <code>Jatek</code> aktuális állapota
 	 * @param új az újonnan beállítandó hibás állapot
 	 */
@@ -44,7 +43,6 @@ public class JatekStatuszValtasiHiba extends Exception {
 	
 	/**
 	 * Hibaüzenet generálása a kiváltó okok megnevezésével.
-	 * 
 	 * @return a leírást tartalmazó {@code String}
 	 * @see java.lang.Throwable#getMessage()
 	 */

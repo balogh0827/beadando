@@ -1,6 +1,6 @@
 
 /**
- * A <code>main()</code> metódust tartalmazó {@link Kezelo} osztályt tartalmazó csomag.
+ * A csomagban a <code>main()</code> metódust tartalmazó {@link Kezelo} osztály található.
  * @author Balogh Ádám
  * @version 1.0
  *

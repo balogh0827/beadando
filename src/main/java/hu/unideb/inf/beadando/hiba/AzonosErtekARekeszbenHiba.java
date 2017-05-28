@@ -2,8 +2,8 @@ package hu.unideb.inf.beadando.hiba;
 
 /**
  * Az <code>AzonosErtekARekeszbenHiba</code> kivétel annak az esetnek a jelzésére szolgál, 
- * amikor az aktuális cellába beírni kívánt érték már szerepel Sudoku táblában
- * az aktuális celláéval azonos sorhoz és oszlophoz tartozó négyzetben( melynek neve a játékban rekesz).
+ * amikor az aktuális cellába beírni kívánt érték már szerepel a Sudoku táblában
+ * az aktuális cellához tartozó négyzetben (melynek neve a játékban rekesz).
  * 
  * @author Balogh Ádám
  */
@@ -21,7 +21,7 @@ public class AzonosErtekARekeszbenHiba extends Exception{
 	private int oszlopszám;
 	
 	/**
-	 *	A rekeszben már szereplő, a hibát kiváltó értéket tartalmazza. 
+	 *	A rekeszben már szereplő, a hibát kiváltó érték. 
 	 */
 	private String érték;
 	

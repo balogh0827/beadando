@@ -1,6 +1,6 @@
 package hu.unideb.inf.beadando.modell;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 
 /**
@@ -23,7 +23,7 @@ public class Jatek {
 	 *	A játék befejezésének idejét tároló mező.
 	 *	 
 	 */
-	private ZonedDateTime befejezésIdeje;
+	private LocalDateTime befejezésIdeje;
 	
 	
 	
@@ -68,7 +68,7 @@ public class Jatek {
 	 *  Beállítja a befejezés idejét a paraméter által megadott étrékre.
 	 * @param befejezésiIdő a {@link #befejezésIdeje}-nek új értékét tartalmazza
 	 */
-	public void setBefejezésIdeje(ZonedDateTime befejezésiIdő){
+	public void setBefejezésIdeje(LocalDateTime befejezésiIdő){
 		befejezésIdeje = befejezésiIdő;
 	}
 	
@@ -77,7 +77,7 @@ public class Jatek {
 	 * Lekérdezi a játék befejezésénak idejét.
 	 * @return a {@link #befejezésIdeje} nevű mező tartalma
 	 */
-	public ZonedDateTime getBefejezésIdeje(){
+	public LocalDateTime getBefejezésIdeje(){
 		return befejezésIdeje;
 	}
 	

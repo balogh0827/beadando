@@ -39,7 +39,7 @@ public class TablaVezerlo {
 	
 	
 	/**
-	 *	A logoláshoz használt logger.
+	 *	A naplózáshoz használt logger.
 	 *@see org.slf4j.Logger
 	 *@see org.slf4j.LoggerFactory 
 	 */
@@ -52,9 +52,9 @@ public class TablaVezerlo {
 	 */
 	public void létrehozMegadottMéretűTábla(int méret) throws TablaMeretHiba {
 
-		logger.debug("Tábla létrehozása {} mérettel...", méret);
+		//logger.debug("Tábla létrehozása {} mérettel...", méret);
 		TablaEllenor.ellenőrizTáblaMéret(méret);
-		logger.debug("Tábla létrehozása {} mérettel - sikeres", méret);
+		//logger.debug("Tábla létrehozása {} mérettel - sikeres", méret);
 		tábla = new Tabla(méret);
 	}
 	
@@ -133,7 +133,7 @@ public class TablaVezerlo {
 	
 
 	/**
-	 * Adott {@code Cella} lekérdezése a {@code Tabla}-ból 
+	 * Adott {@code Cella} lekérdezése a {@code Tabla}-ból.
 	 * @param sor a cella sorszáma
 	 * @param oszlop a cella oszlopszáma
 	 * @return a tábla {@code sor} sorának {@code oszlop} oszlopában található cellája
@@ -324,9 +324,9 @@ public class TablaVezerlo {
 	public void kitöltCella(int sorszám, int oszlopszám, String érték) throws CellaTartalomHiba, CellaTipusValtoztatasiHiba,
 			AzonosErtekASorbanHiba, AzonosErtekAzOszlopbanHiba, AzonosErtekARekeszbenHiba, SorszamHiba, OszlopszamHiba {
 
-		logger.debug("Cella kitöltésének megkísérlése...");
+		//logger.debug("Cella kitöltésének megkísérlése...");
 		
-		logger.debug("  ");
+		//logger.debug("  ");
 		Cella aktuálisCella = lekérCella(sorszám, oszlopszám);
 		
 		if(érték.equals("")){

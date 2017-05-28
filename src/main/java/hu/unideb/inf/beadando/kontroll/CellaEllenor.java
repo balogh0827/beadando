@@ -1,14 +1,11 @@
 package hu.unideb.inf.beadando.kontroll;
 
-
 import hu.unideb.inf.beadando.hiba.CellaTartalomHiba;
 import hu.unideb.inf.beadando.hiba.CellaTipusValtoztatasiHiba;
 import hu.unideb.inf.beadando.hiba.OszlopszamHiba;
 import hu.unideb.inf.beadando.hiba.SorszamHiba;
 import hu.unideb.inf.beadando.modell.Cella;
 import hu.unideb.inf.beadando.modell.CellaTipus;
-
-
 
 /**
  * A tábla celláinak ellenőrzésére szolgáló statikus metódusokat szolgáltató osztály.
@@ -19,8 +16,6 @@ import hu.unideb.inf.beadando.modell.CellaTipus;
  *
  */
 final class CellaEllenor {
-	
-	
 	
 	/**
 	 * Ez a paraméter nélküli konstruktor {@code private} láthatósága miatt nem engedi az osztály példányosítását.
@@ -53,11 +48,12 @@ final class CellaEllenor {
 
 	
 	/**
-	 * A <code>Cella<code> új tartalmának ellenőrzését végző metódus.
+	 * A <code>Cella</code> új tartalmának ellenőrzését végző metódus.
 	 * <p>
 	 * Ha az új tartalom üres vagy megegyezik a régi tartalommal, akkor nem váltódik ki kivétel.
 	 * <br>Abban az esetben viszont ha a tartalom nem számértéket tartalmaz 
 	 * vagy szám esetén nem felel meg az érvényesítés folyamán, akkor {@code CellaTartalomHiba} váltódik ki.
+	 * </p>
 	 *  
 	 * @param cella a vizsgálandó cella
 	 * @param tartalom a cellába írandó új érték
@@ -88,7 +84,7 @@ final class CellaEllenor {
 	
 	
 	/**
-	 * A <code>Cella<code> új típusának ellenőrzését végző metódus.
+	 * A <code>Cella</code> új típusának ellenőrzését végző metódus.
 	 * <p>
 	 * Ha a <code>Cella</code> új típusa megegyezik a jelenlegivel, akkor nem váltódik ki kivétel.
 	 * <br>Ha a {@code Cella} típusa {@code CellaTipus.ÜRES} 
@@ -98,7 +94,7 @@ final class CellaEllenor {
 	 *  {@code CellaTipusValtoztatasiHiba} kivétel fog kiváltódni.
 	 *  <br>Amikor a cella típusa {@code CellaTipus.KITÖLTÖTT} akkor csak a {@code CellaTipus.MEGADOTT}
 	 *  típusra történő változtatáskor kapunk {@code CellaTipusValtoztatasiHiba} kivételt. 
-	 * 
+	 * </p>
 	 * @param cella a vizsgálandó cella
 	 * @param újTípus  az új beállítandó típus 
 	 * @throws CellaTipusValtoztatasiHiba amennyiben az {@code újTípus} nem megfelelő

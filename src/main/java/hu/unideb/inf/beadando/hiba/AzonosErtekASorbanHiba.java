@@ -10,13 +10,13 @@ package hu.unideb.inf.beadando.hiba;
 public class AzonosErtekASorbanHiba extends Exception{
 
 	/**
-	 *	A hibaüzenet generálásához szükséges mező, mely a sorban már szereplő, a hibát kiváltó értéket tartalmazza. 
+	 *	A sorban már szereplő, a hibát kiváltó érték. 
 	 */
 	private String érték;
 	
 
 	/**
-	 *	A hibás cella sorszámát tartalmazó mező.  
+	 *	A hibás cella sorszáma.  
 	 */
 	private int sorszám;
 	

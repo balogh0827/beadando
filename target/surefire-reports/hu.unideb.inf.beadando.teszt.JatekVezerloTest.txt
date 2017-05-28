@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: hu.unideb.inf.beadando.teszt.JatekVezerloTest
+-------------------------------------------------------------------------------
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.375 s - in hu.unideb.inf.beadando.teszt.JatekVezerloTest

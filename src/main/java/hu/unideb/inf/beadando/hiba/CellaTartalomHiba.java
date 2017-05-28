@@ -13,7 +13,6 @@ public class CellaTartalomHiba extends Exception {
 	
 	/**
 	 *	A hibás <code>Cella</code> sorszámát tartalmazó mező. 
-	 *
 	 * @see hu.unideb.inf.beadando.modell.Cella
 	 */
 	int sorszám;

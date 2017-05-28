@@ -2,7 +2,7 @@ package hu.unideb.inf.beadando.kontroll;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 import hu.unideb.inf.beadando.hiba.AzonosErtekARekeszbenHiba;
 import hu.unideb.inf.beadando.hiba.AzonosErtekASorbanHiba;
 import hu.unideb.inf.beadando.hiba.AzonosErtekAzOszlopbanHiba;
@@ -11,284 +11,387 @@ import hu.unideb.inf.beadando.hiba.CellaTipusValtoztatasiHiba;
 import hu.unideb.inf.beadando.hiba.OszlopszamHiba;
 import hu.unideb.inf.beadando.hiba.SorszamHiba;
 import hu.unideb.inf.beadando.hiba.TablaMeretHiba;
-import hu.unideb.inf.beadando.modell.Cella;
 import hu.unideb.inf.beadando.modell.CellaTipus;
-
-
 
 /**
  * A tábla generálásáért felelős osztály.
+ * 
  * @author Balogh Ádám
  *
  */
 public class Generator {
 
-	
-	
-	private TablaVezerlo táblavezérlő = new TablaVezerlo();
-	
-	private boolean hibás;
-	
-	private int tűréshatár = 1;
-	
+	/**
+	 * A tábla kezelését végző {@link TablaVezerlo} osztály egy példánya.
+	 */
+	private TablaVezerlo táblavezérlő;
+
+	/**
+	 * Legfeljebb ennyiszer próbálkozik a program sikertelen táblagenerálás esetén.
+	 */
+	private int tűréshatár = 150;
+
+	/**
+	 * A generálás során lementett cellák információit tartalmazó lista.
+	 */
 	private List<String> mentés = new ArrayList<>();
-	
-	private List<List<Integer>> módosítások = new ArrayList<List<Integer>>();
-	
-	private int visszatöltésSzáma = 0;
-	
-	public TablaVezerlo lekérTáblavazérlő(){
+
+	/**
+	 * A cellákba beírható értékek listáját tartalmazó lista.
+	 */
+	List<List<Integer>> lehetségesÉrtékek = new ArrayList<List<Integer>>();
+
+	/**
+	 * A táblagenerálás próbálkozásainak száma.
+	 */
+	private int számláló = 0;
+
+	/**
+	 * Megadja, hogy a generált tábla tartalmaz -e hibás cellákat.
+	 */
+	private boolean hibás = false;
+
+	/**
+	 * A generálandó tábla mérete.
+	 */
+	private int méret = 0;
+
+	/**
+	 * Elkéri a {@link TablaVezerlo} aktuális példányát.
+	 * @return a {@code TablaVezerlo} példánya
+	 */
+	public TablaVezerlo lekérTáblavazérlő() {
 		return táblavezérlő;
 	}
-	
-	
-	
-	public void generálTábla(int táblaMéret) throws SorszamHiba, OszlopszamHiba{
+
+	/**
+	 * A tábla generálását koordináló metódus.
+	 * @param t az aktuális {@link TablaVezerlo}
+	 */
+	public void generálTábla(TablaVezerlo t) {
 		
-		
+		táblavezérlő = t;
+
+		int táblaMéret = t.lekérTáblaMéret();
 		
 		try {
 			TablaEllenor.ellenőrizTáblaMéret(táblaMéret);
 			táblavezérlő.létrehozMegadottMéretűTábla(táblaMéret);
 		} catch (TablaMeretHiba e) {
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
 		}
-		
-		
-		
-		
-		
-		//System.out.println("indul");
-		
-		//táblavezérlő.kiírTábla();
-		
-		try {
-//			táblavezérlő.kitöltCella(1, 4, "5");
-//			táblavezérlő.kitöltCella(1, 6, "2");
-//			táblavezérlő.kitöltCella(2, 2, "3");
-//			táblavezérlő.kitöltCella(2, 5, "7");
-//			táblavezérlő.kitöltCella(2, 8, "8");
-//			táblavezérlő.kitöltCella(3, 2, "9");
-//			táblavezérlő.kitöltCella(3, 3, "4");
-//			táblavezérlő.kitöltCella(3, 4, "8");
-//			táblavezérlő.kitöltCella(3, 6, "1");
-//			táblavezérlő.kitöltCella(3, 7, "6");
-//			táblavezérlő.kitöltCella(3, 8, "5");
-//			táblavezérlő.kitöltCella(4, 1, "5");
-//			táblavezérlő.kitöltCella(4, 3, "8");
-//			táblavezérlő.kitöltCella(4, 7, "9");
-//			táblavezérlő.kitöltCella(4, 9, "7");
-//			táblavezérlő.kitöltCella(5, 4, "2");
-//			táblavezérlő.kitöltCella(5, 6, "6");
-//			táblavezérlő.kitöltCella(6, 1, "3");
-//			táblavezérlő.kitöltCella(6, 3, "2");
-//			táblavezérlő.kitöltCella(6, 7, "8");
-//			táblavezérlő.kitöltCella(6, 9, "4");
-//			táblavezérlő.kitöltCella(7, 2, "5");
-			táblavezérlő.kitöltCella(7, 3, "3");
-//			táblavezérlő.kitöltCella(7, 4, "1");
-//			táblavezérlő.kitöltCella(7, 6, "8");
-//			táblavezérlő.kitöltCella(7, 7, "7");
-//			táblavezérlő.kitöltCella(7, 8, "4");
-//			táblavezérlő.kitöltCella(8, 2, "4");
-//			táblavezérlő.kitöltCella(8, 5, "5");
-//			táblavezérlő.kitöltCella(8, 8, "1");
-//			táblavezérlő.kitöltCella(9, 4, "4");
-//			táblavezérlő.kitöltCella(9, 6, "3");
-		} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba | AzonosErtekAzOszlopbanHiba
-				| AzonosErtekARekeszbenHiba e1) {
-			// TODO Auto-generated catch block
-			//e1.printStackTrace();
-		}
-		
-		//táblavezérlő.kiírTábla();
-		
-		
-		
-		int size = 0;
-		
-		
-		//System.out.println("legkevesebb lehetőségű cella DB: " + size);
-		
-		int sorszám, oszlopszám;
-		int érték;
-		int számláló = 0;
-		
-		lementÁllapot();
-		
-		
-		
-		
-		while(!táblavezérlő.készATábla() && számláló < tűréshatár ){
-			
-			
-			///biztosakat beír
-			if(legkevesebbBeírhatóDarab() == 1){
-				
 
-				List<int[]> l = legkevesebbBeírhatóDarabszámúCella();
-				size = legkevesebbBeírhatóDarabszámúCella().size();
-				boolean voltHiba = false;
+		méret = táblaMéret;
+
+		while (!táblavezérlő.készATábla()) {
+			mag();
+
+		}
+		
+		kitöröl();
+		
+		konvertál();
+		
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void konvertál(){
+		
+		String régiÉrték = "";
+		
+		for(int sor = 1; sor <= méret; sor++){
+			
+			for(int oszlop = 1; oszlop <= méret; oszlop++){
 				
-				for(int i = 0; i < size; i++){
+				List<String> aktuálisCella = null;
+				try {
+					 aktuálisCella = táblavezérlő.lekérCellaAdatok(sor, oszlop);
+				} catch (SorszamHiba | OszlopszamHiba e) {
+				}
+				
+				if(aktuálisCella.get(0).equalsIgnoreCase("kitöltött")){
 					
-					int[] cella = l.get(i);
-					
-					sorszám = cella[0];
-					oszlopszám = cella[1];
-					
-					if(táblavezérlő.cellábaÍrhatóSzámjegyek(sorszám, oszlopszám).isEmpty()){
-						break;
-					}
-					
-					érték = táblavezérlő.cellábaÍrhatóSzámjegyek(sorszám, oszlopszám).get(0);
-					
+					régiÉrték = aktuálisCella.get(3);
 					
 					try {
-						táblavezérlő.kitöltCella(sorszám, oszlopszám, String.valueOf(érték));
+						táblavezérlő.kitöltCella(sor, oszlop, "");
 					} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba
-							| AzonosErtekAzOszlopbanHiba | AzonosErtekARekeszbenHiba e) {
-						voltHiba = true;
+							| AzonosErtekAzOszlopbanHiba | AzonosErtekARekeszbenHiba | SorszamHiba | OszlopszamHiba e) {
+					}
+					
+					try {
+						táblavezérlő.megadCella(sor, oszlop, régiÉrték);
+					} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba
+							| AzonosErtekAzOszlopbanHiba | AzonosErtekARekeszbenHiba | SorszamHiba | OszlopszamHiba e) {
 					}
 					
 				}
-				
-				if(voltHiba){
-					visszatöltÁllapot();
-				}
-				
-			}else{					
-				
-			}		
+			}
 			
-			táblavezérlő.kiírTábla();
 		}
 		
-		
-		
-		if(számláló >= tűréshatár){
-			hibás = true;
-			System.err.println("hibás a tábla!!!");
+	}
+	
+
+	/**
+	 * A metódus a generált táblából véletlenszerűen töröl ki értékeket.
+	 */
+	private void kitöröl() {
+
+		int véletlen = 0;
+
+		for (int sor = 1; sor <= méret; sor++) {
+
+			for (int oszlop = 1; oszlop <= méret; oszlop++) {
+
+				véletlen = new Random().nextInt(199 * 11) + 23;
+
+				if (véletlen % 2 == 0) {
+					try {
+						táblavezérlő.kitöltCella(sor, oszlop, "");
+					} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba
+							| AzonosErtekAzOszlopbanHiba | AzonosErtekARekeszbenHiba | SorszamHiba | OszlopszamHiba e) {
+					}
+				}
+
+			}
+
 		}
-		
-		//táblavezérlő.kiírTábla();
-		
+
+	}
+	
+
+	/**
+	 * A táblagenerálás lényegi részét végző metódus. 
+	 */
+	private void mag() {
+
+		számláló = 0;
+
+		táblavezérlő.újrakezd();
+
+		//System.out.println("indul");
+
+		try {
+			táblavezérlő.megadCella((int) (Math.random() * méret + 1), (int) (Math.random() * méret + 1),
+					String.valueOf((int) (Math.random() * méret + 1)));
+		} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba | AzonosErtekAzOszlopbanHiba
+				| AzonosErtekARekeszbenHiba | SorszamHiba | OszlopszamHiba e1) {
+		}
+
+		lementÁllapot();
+
+		while (!táblavezérlő.készATábla()) {
+
+			if (számláló > tűréshatár) {
+				break;
+			}
+
+			hibás = false;
+			int darabszám = -1;
+
+			try {
+				darabszám = legkevesebbBeírhatóDarab();
+			} catch (SorszamHiba | OszlopszamHiba e4) {
+			}
+			List<int[]> cellalista = null;
+			try {
+				cellalista = legkevesebbBeírhatóDarabszámúCella();
+			} catch (SorszamHiba | OszlopszamHiba e3) {
+			}
+
+			// biztosakat beír
+			if (darabszám == 1) {
+
+				for (int i = 0; i < cellalista.size(); i++) {
+
+					int[] cella = cellalista.get(i);
+					int s = cella[0];
+					int o = cella[1];
+
+					try {
+						if (táblavezérlő.cellábaÍrhatóSzámjegyek(s, o).isEmpty()) {
+							if (!táblavezérlő.készATábla()) {
+								visszatöltÁllapot();
+							}
+							hibás = true;
+							break;
+						}
+					} catch (SorszamHiba | OszlopszamHiba e2) {
+					}
+
+					int számjegy = -1;
+					try {
+						számjegy = táblavezérlő.cellábaÍrhatóSzámjegyek(s, o).get(0);
+					} catch (SorszamHiba | OszlopszamHiba e1) {
+					}
+
+					try {
+						táblavezérlő.kitöltCella(cella[0], cella[1], String.valueOf(számjegy));
+					} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba
+							| AzonosErtekAzOszlopbanHiba | AzonosErtekARekeszbenHiba | SorszamHiba | OszlopszamHiba e) {
+						hibás = true;
+						visszatöltÁllapot();
+						break;
+					}
+
+				}
+
+				if (!hibás) {
+					lementÁllapot();
+				}
+
+			} else {
+				// tippel
+				hibás = false;
+				try {
+					cellalista = legkevesebbBeírhatóDarabszámúCella();
+				} catch (SorszamHiba | OszlopszamHiba e2) {
+				}
+
+				if (cellalista.isEmpty()) {
+					if (!táblavezérlő.készATábla()) {
+						visszatöltÁllapot();
+					}
+					hibás = true;
+					break;
+				}
+				int db = cellalista.size();
+
+				int[] tipp = cellalista.get((int) (Math.random() * db));
+				int s = tipp[0];
+				int o = tipp[1];
+				int max = -1;
+				try {
+					max = táblavezérlő.cellábaÍrhatóSzámjegyek(s, o).size();
+				} catch (SorszamHiba | OszlopszamHiba e1) {
+				}
+
+				int számjegy = -1;
+				try {
+					számjegy = táblavezérlő.cellábaÍrhatóSzámjegyek(s, o).get((int) (Math.random() * max));
+				} catch (SorszamHiba | OszlopszamHiba e1){
+				}
+
+				try {
+					táblavezérlő.kitöltCella(tipp[0], tipp[1], String.valueOf(számjegy));
+				} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba
+						| AzonosErtekAzOszlopbanHiba | AzonosErtekARekeszbenHiba | SorszamHiba | OszlopszamHiba e) {
+					visszatöltÁllapot();
+					hibás = true;
+				}
+
+			}
+
+			számláló++;
+			//System.out.println(számláló);
+
+		}
 	}
 
 	
-	private void csere(int sor1, int sor2, int oszlop1, int oszlop2){
-		
-		
-		try {
-			String tartalom1 = táblavezérlő.lekérCellaAdatok(sor1, oszlop1).get(3);
-			String tartalom2 = táblavezérlő.lekérCellaAdatok(sor2, oszlop2).get(3);
-			
-			táblavezérlő.kitöltCella(sor1, oszlop1, tartalom2);
-		
-			táblavezérlő.kitöltCella(sor2, oszlop2, tartalom1);
-			
-		} catch (SorszamHiba | OszlopszamHiba | CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba | AzonosErtekAzOszlopbanHiba | AzonosErtekARekeszbenHiba e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	
-	///jónak tűnik
-	private int legkevesebbBeírhatóDarab() throws SorszamHiba, OszlopszamHiba{
-		
+	/**
+	 * Megadja, hogy mennyi a táblában a cellákba beírható értékek számának minimuma.
+	 * @return a beírható értékek legkisebb darabszáma
+	 * @throws SorszamHiba ha hibás a vizsgált cella sorszáma
+	 * @throws OszlopszamHiba ha hibás a vizsgált cella oszlopszáma
+	 */
+	private int legkevesebbBeírhatóDarab() throws SorszamHiba, OszlopszamHiba {
 
 		int méret = táblavezérlő.lekérTáblaMéret();
 		int legkevesebbDarab = méret;
 		int aktuálisÉrtékszám = méret;
 
-		
-		for(int sor = 1; sor <= méret; sor++){
-			
-			for(int oszlop = 1; oszlop <= méret; oszlop++){
-				
-				if(!táblavezérlő.lekérCellaAdatok(sor, oszlop).get(0).equals(CellaTipus.KITÖLTÖTT.toString()))
+		for (int sor = 1; sor <= méret; sor++) {
+
+			for (int oszlop = 1; oszlop <= méret; oszlop++) {
+
+				if (!táblavezérlő.lekérCellaAdatok(sor, oszlop).get(0).equals(CellaTipus.KITÖLTÖTT.toString()))
 					aktuálisÉrtékszám = táblavezérlő.cellábaÍrhatóSzámjegyek(sor, oszlop).size();
-				
-				if(aktuálisÉrtékszám == 0 )
+
+				if (aktuálisÉrtékszám == 0)
 					continue;
-				
-				if( legkevesebbDarab > aktuálisÉrtékszám){
+
+				if (legkevesebbDarab > aktuálisÉrtékszám) {
 					legkevesebbDarab = aktuálisÉrtékszám;
 				}
 			}
-			
+
 		}
-		
+
 		return legkevesebbDarab;
-		
+
 	}
 	
-	//jónak tűnik
-	private List<int[]> legkevesebbBeírhatóDarabszámúCella() throws SorszamHiba, OszlopszamHiba{
-		
+
+	/**
+	 * Megadja, hogy mely cellákba kerülhet a legkevesebb darabszámú érték.
+	 * @return a cellák listája (egy cella a sor- és oszlopszámát tartalmazó kételemű tömbbel van megadva)
+	 * @throws SorszamHiba ha a vizsgált cella sorszáma hibás
+	 * @throws OszlopszamHiba ha a vizsgált cella oszlopszáma hibás
+	 */
+	private List<int[]> legkevesebbBeírhatóDarabszámúCella() throws SorszamHiba, OszlopszamHiba {
+
 		List<int[]> lista = new ArrayList<>();
-		
+
 		int méret = táblavezérlő.lekérTáblaMéret();
 		int legkevesebbDarab = legkevesebbBeírhatóDarab();
 		int aktuálisÉrtékszám = méret;
-		
 
-		for(int sor = 1; sor <= méret; sor++){
-			
-			for(int oszlop = 1; oszlop <= méret; oszlop++){
+		for (int sor = 1; sor <= méret; sor++) {
+
+			for (int oszlop = 1; oszlop <= méret; oszlop++) {
 				aktuálisÉrtékszám = táblavezérlő.cellábaÍrhatóSzámjegyek(sor, oszlop).size();
-				
-				if(legkevesebbDarab == aktuálisÉrtékszám){
-					lista.add(new int[]{sor, oszlop});
+
+				if (legkevesebbDarab == aktuálisÉrtékszám) {
+					lista.add(new int[] { sor, oszlop });
 				}
 			}
-			
+
 		}
-		
-		
+
 		return lista;
-	} 
-	
-	
-	private void lementÁllapot(){
-		
-		System.out.println("mentés...");
-		
+	}
+
+	/**
+	 * Lementi a generálás aktuális állapotát.
+	 */
+	private void lementÁllapot() {
+
+		//System.out.println("mentés...");
+
 		mentés.clear();
-		
+
 		try {
 			mentés = táblavezérlő.leképezTábla();
 		} catch (SorszamHiba | OszlopszamHiba e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
-		
-		
+
 		//táblavezérlő.kiírTábla();
-		
+
 	}
-	
-	
-	private void visszatöltÁllapot(){
-		
-		System.out.println("visszatöltés");
-		
+
+	/**
+	 * Visszatölti az utolsó mentett állapotot.
+	 */
+	private void visszatöltÁllapot() {
+
+		//System.out.println("visszatöltés");
+
 		táblavezérlő.újrakezd();
-		
+
 		try {
 			táblavezérlő.feldolgoz(mentés);
 		} catch (CellaTartalomHiba | CellaTipusValtoztatasiHiba | AzonosErtekASorbanHiba | AzonosErtekAzOszlopbanHiba
 				| AzonosErtekARekeszbenHiba | SorszamHiba | OszlopszamHiba e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
-		
-		
+		számláló++;
 		//táblavezérlő.kiírTábla();
 	}
-	
-	
-	
+
 }
