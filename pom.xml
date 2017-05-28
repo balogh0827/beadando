@@ -188,11 +188,11 @@
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.7</version>
 				<configuration>
-					<instrumentation>
-						<excludes>
-							<exclude>**/nezet/*</exclude>
-						</excludes>
-					</instrumentation>
+<!-- 					<instrumentation> -->
+<!-- 						<excludes> -->
+<!-- 							<exclude>**/nezet/*</exclude> -->
+<!-- 						</excludes> -->
+<!-- 					</instrumentation> -->
 				</configuration>
 			</plugin>
 			

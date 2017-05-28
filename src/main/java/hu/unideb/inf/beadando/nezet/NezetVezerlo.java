@@ -45,7 +45,7 @@ public class NezetVezerlo extends Application{
 	private void létrehozFőmenü(){
 		
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("Fomenu.fxml"));
+		loader.setLocation(NezetVezerlo.class.getClassLoader().getResource("Fomenu.fxml"));
 		
 		try {
 			AnchorPane főmenü = (AnchorPane)loader.load();
@@ -72,7 +72,7 @@ public class NezetVezerlo extends Application{
 	public void létrehozJátékNézet(){
 		
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("Jatek.fxml"));
+		loader.setLocation(NezetVezerlo.class.getClassLoader().getResource("Jatek.fxml"));
 		
 		try {
 			
@@ -102,7 +102,7 @@ public class NezetVezerlo extends Application{
 	public void létrehozEredményNézet(){
 		
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("Eredmenyek.fxml"));
+		loader.setLocation(NezetVezerlo.class.getClassLoader().getResource("Eredmenyek.fxml"));
 		
 		try {
 				
@@ -131,7 +131,7 @@ public class NezetVezerlo extends Application{
 	public void betöltSúgó(int lapszám){
 		
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("Sugo.fxml"));
+		loader.setLocation(NezetVezerlo.class.getClassLoader().getResource("Sugo.fxml"));
 		
 		try{
 			
